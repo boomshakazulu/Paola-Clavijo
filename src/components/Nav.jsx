@@ -8,17 +8,17 @@ export default function Nav() {
     ].join(" ");
 
   return (
-    <header className="fixed inset-x-0 top-0 z-20 flex items-start justify-center gap-3 px-4 py-3 text-[0.68rem] uppercase tracking-[0.18em] sm:items-center sm:px-7 sm:py-4">
-      {/* <NavLink to="/" className="no-underline">
+    <header className="fixed inset-x-0 top-0 z-20 flex items-start justify-between gap-3 px-4 py-3 text-[0.68rem] uppercase tracking-[0.18em] sm:items-center sm:px-7 sm:py-4">
+      <NavLink to="/" className="no-underline">
         Paola Clavijo
-      </NavLink> */}
+      </NavLink>
       <nav
         className="flex flex-wrap gap-3 sm:gap-5 text-base"
         aria-label="Main Navigation"
       >
-        <NavLink to="/" end className={linkClass}>
+        {/* <NavLink to="/" end className={linkClass}>
           Home
-        </NavLink>
+        </NavLink> */}
         <NavLink to="/work" className={linkClass}>
           Work
         </NavLink>
