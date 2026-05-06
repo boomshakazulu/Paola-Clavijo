@@ -68,7 +68,7 @@ const Showreel = ({ src, poster }) => {
       // destination-out
       const grad = ctx.createLinearGradient(0, 0, 0, h);
       grad.addColorStop(0, "rgba(0,0,0,0.3)"); //
-      grad.addColorStop(0.5, "rgba(0,0,0,0.9)"); // nearly gone halfway
+      grad.addColorStop(0.5, "rgba(0,0,0,0.5)"); // nearly gone halfway
       grad.addColorStop(1, "rgba(0,0,0,1)"); // fully erased at bottom
       ctx.globalCompositeOperation = "destination-out";
       ctx.fillStyle = grad;

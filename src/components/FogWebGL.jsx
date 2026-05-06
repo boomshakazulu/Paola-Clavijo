@@ -170,8 +170,8 @@ export default function FogWebGL() {
         vec2 uv = v_uv;
         uv.x *= u_aspect.x / max(u_aspect.y, 0.0001);
 
-        vec2 driftA = vec2(u_time * 0.06, -u_time * 0.025);
-        vec2 driftB = vec2(-u_time * 0.04,  u_time * 0.05);
+        vec2 driftA = vec2(u_time * 0.09, -u_time * 0.038);
+        vec2 driftB = vec2(-u_time * 0.06,  u_time * 0.075);
         vec2 warpUv = uv + flow * 0.1;
 
         float n1 = fbm(warpUv * 2.2 + driftA);
