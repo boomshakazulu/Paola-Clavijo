@@ -1,6 +1,7 @@
 import FluidBackground from "../components/FluidBackground";
 import Showreel from "../components/Showreel";
 import MarqueeText from "../components/MarqueeText";
+import ScrollIndicator from "../components/ScrollIndicator";
 
 export default function ShowcasePage() {
   return (
@@ -12,6 +13,7 @@ export default function ShowcasePage() {
           <Showreel src="/videos/ShowreelVideo.webm" />
         </div>
       </section>
+      <ScrollIndicator className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10" />
     </main>
   );
 }

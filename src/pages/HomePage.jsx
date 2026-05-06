@@ -1,4 +1,5 @@
 import FogWebGL from "../components/FogWebGL";
+import ScrollIndicator from "../components/ScrollIndicator";
 
 const homeImage = "/images/6261721a88480c276d3e17f3d76add8e82d0c1db.png";
 
@@ -18,6 +19,7 @@ export default function HomePage() {
           Paola Clavijo
         </h1>
       </div>
+      <ScrollIndicator className="absolute bottom-10 left-1/2 -translate-x-1/2 z-10" />
     </main>
   );
 }
