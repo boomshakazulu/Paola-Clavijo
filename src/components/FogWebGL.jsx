@@ -38,11 +38,27 @@ function createRenderTarget(gl, width, height) {
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+  gl.texImage2D(
+    gl.TEXTURE_2D,
+    0,
+    gl.RGBA,
+    width,
+    height,
+    0,
+    gl.RGBA,
+    gl.UNSIGNED_BYTE,
+    null,
+  );
 
   const framebuffer = gl.createFramebuffer();
   gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
-  gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
+  gl.framebufferTexture2D(
+    gl.FRAMEBUFFER,
+    gl.COLOR_ATTACHMENT0,
+    gl.TEXTURE_2D,
+    texture,
+    0,
+  );
 
   return { texture, framebuffer, width, height };
 }
@@ -54,7 +70,11 @@ export default function FogWebGL() {
     const canvas = canvasRef.current;
     if (!canvas) return undefined;
 
-    const gl = canvas.getContext("webgl", { alpha: true, antialias: false, premultipliedAlpha: true });
+    const gl = canvas.getContext("webgl", {
+      alpha: true,
+      antialias: false,
+      premultipliedAlpha: true,
+    });
     if (!gl) return undefined;
 
     const vertexSource = `
@@ -94,7 +114,7 @@ export default function FogWebGL() {
         vec2 w = decodeVel(texture2D(u_prev, v_uv - vec2(u_texel.x, 0.0)));
 
         vel = mix(advVel, (n + s + e + w) * 0.25, 0.18);
-        vel *= 0.962;
+        vel *= 0.985;
 
         float cN = texture2D(u_prev, v_uv + vec2(0.0, u_texel.y)).b;
         float cS = texture2D(u_prev, v_uv - vec2(0.0, u_texel.y)).b;
@@ -150,8 +170,8 @@ export default function FogWebGL() {
         vec2 uv = v_uv;
         uv.x *= u_aspect.x / max(u_aspect.y, 0.0001);
 
-        vec2 driftA = vec2(u_time * 0.02, -u_time * 0.008);
-        vec2 driftB = vec2(-u_time * 0.013, u_time * 0.016);
+        vec2 driftA = vec2(u_time * 0.06, -u_time * 0.025);
+        vec2 driftB = vec2(-u_time * 0.04,  u_time * 0.05);
         vec2 warpUv = uv + flow * 0.1;
 
         float n1 = fbm(warpUv * 2.2 + driftA);
@@ -169,7 +189,11 @@ export default function FogWebGL() {
 
     const quad = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, quad);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+    gl.bufferData(
+      gl.ARRAY_BUFFER,
+      new Float32Array([-1, -1, 3, -1, -1, 3]),
+      gl.STATIC_DRAW,
+    );
 
     const simA = createRenderTarget(gl, SIM_SIZE, SIM_SIZE);
     const simB = createRenderTarget(gl, SIM_SIZE, SIM_SIZE);
@@ -216,7 +240,11 @@ export default function FogWebGL() {
       gl.bindTexture(gl.TEXTURE_2D, readTarget.texture);
       gl.useProgram(simProgram);
       gl.uniform1i(gl.getUniformLocation(simProgram, "u_prev"), 0);
-      gl.uniform2f(gl.getUniformLocation(simProgram, "u_texel"), 1 / SIM_SIZE, 1 / SIM_SIZE);
+      gl.uniform2f(
+        gl.getUniformLocation(simProgram, "u_texel"),
+        1 / SIM_SIZE,
+        1 / SIM_SIZE,
+      );
       gl.uniform1f(gl.getUniformLocation(simProgram, "u_dt"), dt * 60.0);
       drawFullscreen(simProgram);
 
@@ -234,8 +262,15 @@ export default function FogWebGL() {
       gl.bindTexture(gl.TEXTURE_2D, readTarget.texture);
       gl.useProgram(renderProgram);
       gl.uniform1i(gl.getUniformLocation(renderProgram, "u_state"), 0);
-      gl.uniform1f(gl.getUniformLocation(renderProgram, "u_time"), time * 0.001);
-      gl.uniform2f(gl.getUniformLocation(renderProgram, "u_aspect"), canvas.width, canvas.height);
+      gl.uniform1f(
+        gl.getUniformLocation(renderProgram, "u_time"),
+        time * 0.001,
+      );
+      gl.uniform2f(
+        gl.getUniformLocation(renderProgram, "u_aspect"),
+        canvas.width,
+        canvas.height,
+      );
       drawFullscreen(renderProgram);
       gl.disable(gl.BLEND);
 
@@ -256,5 +291,10 @@ export default function FogWebGL() {
     };
   }, []);
 
-  return <canvas ref={canvasRef} className="pointer-events-auto absolute inset-0 z-[2] h-full w-full" />;
+  return (
+    <canvas
+      ref={canvasRef}
+      className="pointer-events-auto absolute inset-0 z-[2] h-full w-full"
+    />
+  );
 }
