@@ -19,9 +19,9 @@ export default function Nav() {
         {/* <NavLink to="/" end className={linkClass}>
           Home
         </NavLink> */}
-        <NavLink to="/work" className={linkClass}>
+        <a href="/#work" className="no-underline transition-opacity duration-200 opacity-75 hover:opacity-100">
           Work
-        </NavLink>
+        </a>
         <NavLink to="/about" className={linkClass}>
           About
         </NavLink>
