@@ -1,25 +1,68 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import { EffectComposer } from "@react-three/postprocessing";
 import { Fluid } from "@whatisjery/react-fluid-distortion";
 
 export default function FluidBackground() {
+  const rootRef = useRef(null);
   const [cursor, setCursor] = useState({ x: 0, y: 0, visible: false });
 
+  useEffect(() => {
+    let retryId;
+    let cleanup = () => {};
+
+    const attach = () => {
+      const canvas = rootRef.current?.querySelector("canvas");
+      if (!canvas) {
+        retryId = window.setTimeout(attach, 50);
+        return;
+      }
+
+      const handleMouseMove = (event) => {
+        setCursor({ x: event.clientX, y: event.clientY, visible: true });
+        canvas.dispatchEvent(
+          new PointerEvent("pointermove", {
+            bubbles: true,
+            clientX: event.clientX,
+            clientY: event.clientY,
+            pointerId: 1,
+            pointerType: "mouse",
+            isPrimary: true,
+          })
+        );
+      };
+
+      const handleMouseLeave = () => {
+        setCursor((prev) => ({ ...prev, visible: false }));
+        canvas.dispatchEvent(
+          new PointerEvent("pointerleave", {
+            bubbles: true,
+            pointerId: 1,
+            pointerType: "mouse",
+            isPrimary: true,
+          })
+        );
+      };
+
+      window.addEventListener("mousemove", handleMouseMove);
+      window.addEventListener("mouseout", handleMouseLeave);
+
+      cleanup = () => {
+        window.removeEventListener("mousemove", handleMouseMove);
+        window.removeEventListener("mouseout", handleMouseLeave);
+      };
+    };
+
+    attach();
+
+    return () => {
+      if (retryId) window.clearTimeout(retryId);
+      cleanup();
+    };
+  }, []);
+
   return (
-    <div
-      className="relative h-screen w-full cursor-none"
-      onMouseMove={(event) => {
-        const rect = event.currentTarget.getBoundingClientRect();
-        setCursor({
-          x: event.clientX - rect.left,
-          y: event.clientY - rect.top,
-          visible: true,
-        });
-      }}
-      onMouseEnter={() => setCursor((prev) => ({ ...prev, visible: true }))}
-      onMouseLeave={() => setCursor((prev) => ({ ...prev, visible: false }))}
-    >
+    <div ref={rootRef} className="relative h-full w-full cursor-none">
       <Canvas
         dpr={[1, 2]}
         gl={{
