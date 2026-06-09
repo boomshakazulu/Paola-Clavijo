@@ -92,7 +92,7 @@ const Showreel = ({ src, poster }) => {
     const MAX_TILT = 6;
 
     const onMouseMove = (e) => {
-      targetY = -((e.clientX / window.innerWidth) * 2 - 1) * MAX_TILT;
+      targetY = ((e.clientX / window.innerWidth) * 2 - 1) * MAX_TILT;
     };
     const onMouseLeave = () => {
       targetY = 0;

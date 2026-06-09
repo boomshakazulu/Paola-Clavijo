@@ -18,38 +18,77 @@ export default function FluidBackground() {
         return;
       }
 
-      const handleMouseMove = (event) => {
-        setCursor({ x: event.clientX, y: event.clientY, visible: true });
+      const dispatchPointer = (type, { x, y }, pointerType = "mouse") => {
         canvas.dispatchEvent(
-          new PointerEvent("pointermove", {
+          new PointerEvent(type, {
             bubbles: true,
-            clientX: event.clientX,
-            clientY: event.clientY,
-            pointerId: 1,
-            pointerType: "mouse",
+            clientX: x,
+            clientY: y,
+            pointerId: pointerType === "touch" ? 2 : 1,
+            pointerType,
             isPrimary: true,
+            buttons: pointerType === "touch" ? 1 : 0,
+            pressure: pointerType === "touch" ? 0.5 : 0,
           })
         );
+      };
+
+      const handleMouseMove = (event) => {
+        setCursor({ x: event.clientX, y: event.clientY, visible: true });
+        dispatchPointer("pointermove", {
+          x: event.clientX,
+          y: event.clientY,
+        });
       };
 
       const handleMouseLeave = () => {
         setCursor((prev) => ({ ...prev, visible: false }));
-        canvas.dispatchEvent(
-          new PointerEvent("pointerleave", {
-            bubbles: true,
-            pointerId: 1,
-            pointerType: "mouse",
-            isPrimary: true,
-          })
-        );
+        dispatchPointer("pointerleave", { x: 0, y: 0 });
+      };
+
+      const getTouchPoint = (event) => {
+        const touch = event.touches[0] || event.changedTouches[0];
+        return touch ? { x: touch.clientX, y: touch.clientY } : null;
+      };
+
+      const handleTouchStart = (event) => {
+        const point = getTouchPoint(event);
+        if (!point) return;
+
+        setCursor({ ...point, visible: true });
+        dispatchPointer("pointerdown", point, "touch");
+        dispatchPointer("pointermove", point, "touch");
+      };
+
+      const handleTouchMove = (event) => {
+        const point = getTouchPoint(event);
+        if (!point) return;
+
+        setCursor({ ...point, visible: true });
+        dispatchPointer("pointermove", point, "touch");
+      };
+
+      const handleTouchEnd = (event) => {
+        const point = getTouchPoint(event) || { x: 0, y: 0 };
+        setCursor((prev) => ({ ...prev, visible: false }));
+        dispatchPointer("pointerup", point, "touch");
+        dispatchPointer("pointerleave", point, "touch");
       };
 
       window.addEventListener("mousemove", handleMouseMove);
       window.addEventListener("mouseout", handleMouseLeave);
+      window.addEventListener("touchstart", handleTouchStart, { passive: true });
+      window.addEventListener("touchmove", handleTouchMove, { passive: true });
+      window.addEventListener("touchend", handleTouchEnd, { passive: true });
+      window.addEventListener("touchcancel", handleTouchEnd, { passive: true });
 
       cleanup = () => {
         window.removeEventListener("mousemove", handleMouseMove);
         window.removeEventListener("mouseout", handleMouseLeave);
+        window.removeEventListener("touchstart", handleTouchStart);
+        window.removeEventListener("touchmove", handleTouchMove);
+        window.removeEventListener("touchend", handleTouchEnd);
+        window.removeEventListener("touchcancel", handleTouchEnd);
       };
     };
 

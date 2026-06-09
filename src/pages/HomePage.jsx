@@ -1,15 +1,13 @@
 import FogWebGL from "../components/FogWebGL";
 import ScrollIndicator from "../components/ScrollIndicator";
 
-const homeImage = "/images/6261721a88480c276d3e17f3d76add8e82d0c1db.png";
-
-export default function HomePage() {
+export default function HomePage({ homeImage, showFog }) {
   return (
     <main
       className="relative min-h-screen bg-cover bg-center bg-no-repeat"
       style={{ backgroundImage: `url(${homeImage})` }}
     >
-      <FogWebGL />
+      {showFog && <FogWebGL />}
       <div className="absolute inset-0 bg-gradient-to-b from-black/30 to-black/55" />
       <div className="absolute bottom-5 left-4 z-10 sm:bottom-8 sm:left-8">
         <p className="mb-2 text-[0.7rem] uppercase tracking-[0.2em] text-neutral-300">
