@@ -14,6 +14,10 @@ export const albumType = defineType({
       type: 'number',
     }),
     defineField({
+      name: 'AlbumDescription',
+      type: 'text',
+    }),
+    defineField({
       name: 'coverPhoto',
       type: 'image',
       options: {
