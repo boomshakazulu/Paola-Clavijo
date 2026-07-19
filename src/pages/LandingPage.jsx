@@ -58,6 +58,14 @@ export default function LandingPage() {
     };
   }, []);
 
+  useEffect(() => {
+    document.body.classList.toggle("fluid-cursor-hidden", showFluid);
+
+    return () => {
+      document.body.classList.remove("fluid-cursor-hidden");
+    };
+  }, [showFluid]);
+
   // ----------------------------
   // Sanity: homepage image + fog
   // ----------------------------
@@ -173,6 +181,8 @@ export default function LandingPage() {
       <style>{`
         .snap-container::-webkit-scrollbar { display: none; }
         .snap-container { -ms-overflow-style: none; scrollbar-width: none; }
+        .fluid-cursor-hidden,
+        .fluid-cursor-hidden * { cursor: none !important; }
       `}</style>
 
       {showFluid && (

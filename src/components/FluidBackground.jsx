@@ -29,12 +29,19 @@ export default function FluidBackground() {
             isPrimary: true,
             buttons: pointerType === "touch" ? 1 : 0,
             pressure: pointerType === "touch" ? 0.5 : 0,
-          })
+          }),
         );
       };
 
+      const canShowCursor = () =>
+        window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+
       const handleMouseMove = (event) => {
-        setCursor({ x: event.clientX, y: event.clientY, visible: true });
+        setCursor({
+          x: event.clientX,
+          y: event.clientY,
+          visible: canShowCursor(),
+        });
         dispatchPointer("pointermove", {
           x: event.clientX,
           y: event.clientY,
@@ -55,7 +62,7 @@ export default function FluidBackground() {
         const point = getTouchPoint(event);
         if (!point) return;
 
-        setCursor({ ...point, visible: true });
+        setCursor({ ...point, visible: false });
         dispatchPointer("pointerdown", point, "touch");
         dispatchPointer("pointermove", point, "touch");
       };
@@ -64,7 +71,7 @@ export default function FluidBackground() {
         const point = getTouchPoint(event);
         if (!point) return;
 
-        setCursor({ ...point, visible: true });
+        setCursor({ ...point, visible: false });
         dispatchPointer("pointermove", point, "touch");
       };
 
@@ -77,7 +84,9 @@ export default function FluidBackground() {
 
       window.addEventListener("mousemove", handleMouseMove);
       window.addEventListener("mouseout", handleMouseLeave);
-      window.addEventListener("touchstart", handleTouchStart, { passive: true });
+      window.addEventListener("touchstart", handleTouchStart, {
+        passive: true,
+      });
       window.addEventListener("touchmove", handleTouchMove, { passive: true });
       window.addEventListener("touchend", handleTouchEnd, { passive: true });
       window.addEventListener("touchcancel", handleTouchEnd, { passive: true });
@@ -114,7 +123,7 @@ export default function FluidBackground() {
       >
         <EffectComposer>
           <Fluid
-            fluidColor="#9cc9ff"
+            fluidColor="#1e2021"
             force={1.2}
             radius={0.2}
             curl={12}
@@ -124,7 +133,7 @@ export default function FluidBackground() {
             velocityDissipation={0.98}
             densityDissipation={0.95}
             pressure={0.8}
-            rainbow={true}
+            rainbow={false}
             showBackground={false}
           />
         </EffectComposer>
